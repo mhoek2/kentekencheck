@@ -1,0 +1,48 @@
+package kentekencheck;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public abstract class APIClass {
+	public String getJSON( String uri ) throws IOException, InterruptedException
+	{
+		HttpRequest request = HttpRequest.newBuilder().GET().uri( URI.create( uri ) ).build();
+		HttpClient client = HttpClient.newHttpClient();
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+	
+		return response.body();
+	}
+	
+	public String getDateStr( String date_str, String pattern )
+	{
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern( pattern );
+        return LocalDate.parse( date_str, formatter ).toString();
+	}
+
+	public String getJsonValue( JsonObject data, String key )
+	{
+		try {
+			return data.get( key ).getAsString();
+		}
+		catch ( NullPointerException e ) {
+			return new String("");
+		}
+	}
+	
+	abstract StringBuffer buildUri( String data_table, String license );
+	abstract JsonObject parseJSONObject( String json );
+	abstract VehicleClass parseJSONVehicle( JsonObject object );
+	abstract VehicleClass getVehicle( String license );
+}
