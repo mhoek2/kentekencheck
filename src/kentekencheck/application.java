@@ -9,21 +9,23 @@ public class application {
 	
 	public static void parseLicense( ActionEvent e, JLabel label, String license ) 
 	{
+		StringBuffer display_text = new StringBuffer(); // alloc 16
+		
 		RDWApi api = new RDWApi();
 		//OverheidApi api = new OverheidApi();
 		
 		VehicleClass vehicle = api.getVehicle( license );
 		
 		if ( vehicle == null ) {
-			System.out.printf("Geen informatie gevonden voor voertuig met kenteken: %s.", 
+			display_text.insert( 0, 
+					String.format("Geen informatie gevonden kenteken: %s.", 
 					license
-			);
-			return;
+			) );
+			
+			System.out.print(display_text);
 		}
-		
-		StringBuffer display_text = new StringBuffer(); // alloc 16
-				
-		if( vehicle.vervaldatum.length() > 0 )
+	
+		else if ( vehicle.vervaldatum.length() > 0 )
 		{
 			int days = api.getDaysUntilAPK( vehicle.vervaldatum );
 		
@@ -35,6 +37,7 @@ public class application {
 			System.out.println( vehicle.vervaldatum );
 			System.out.printf( display_text.toString() );	
 		}
+	
 		else {
 			display_text.insert( 0, "Voertuig heeft geen vervaldatum" );
 		}

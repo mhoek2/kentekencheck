@@ -60,8 +60,8 @@ public abstract class APIClass {
 		}
 	}
 	
-	abstract StringBuffer buildUri( String data_table, String license );
-	abstract JsonObject parseJSONObject( String json );
-	abstract VehicleClass parseJSONVehicle( JsonObject object );
-	abstract VehicleClass getVehicle( String license );
+	public abstract StringBuffer buildUri( String data_table, String license );
+	public abstract JsonObject parseJSONObject( String json );
+	public abstract VehicleClass parseJSONVehicle( JsonObject object );
+	public abstract VehicleClass getVehicle( String license );
 }

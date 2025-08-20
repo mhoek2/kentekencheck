@@ -6,12 +6,12 @@ import java.time.format.DateTimeFormatter;
 
 import com.google.gson.*;
 
-public class OverheidApi extends APIClass  {
+public final class OverheidApi extends APIClass  {
 	//Overheid.io voertuiggegevens	REST	https://api.overheid.io/voertuiggegevens/4TFL24	
 
-	protected String API_URL 		= "https://api.overheid.io/voertuiggegevens/";
-	protected String API_PARAMS 	= "";
-	protected String DATE_PATTERN 	= "yyyyMMdd";
+	protected final String API_URL 		= "https://api.overheid.io/voertuiggegevens/";
+	protected final String API_PARAMS 	= "";
+	protected final String DATE_PATTERN = "yyyyMMdd";
 	
     @Override
     public String getApiUrl() { return API_URL; }
