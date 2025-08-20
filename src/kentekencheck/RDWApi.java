@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import com.google.gson.*;
 
 public class RDWApi extends APIClass  {
+	//RDW Open Data (resource)	REST	.../resource/m9d7-ebf2.json?$where=kenteken='63BKP7'
+
 	protected String API_URL 		= "https://opendata.rdw.nl/resource/m9d7-ebf2.json";
 	protected String API_PARAMS 	= "?$where=kenteken='";
 	protected String DATE_PATTERN 	= "yyyyMMdd";
