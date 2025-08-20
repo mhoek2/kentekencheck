@@ -14,8 +14,33 @@ import com.google.gson.JsonParser;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public abstract class APIClass {
+    public abstract String getApiUrl();
+    public abstract String getApiParams();
+    public abstract String getDatePattern();
+	
+	public LocalDate getDate( String date_str ) 
+	{
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern( getDatePattern() );
+		return LocalDate.parse( date_str, formatter );
+	}	
+	
+	public String getDateStr( String date_str )
+	{
+        return getDate(date_str).toString();
+	}
+	
+	public int getDaysUntilAPK( String date_str )
+	{
+		LocalDate today = LocalDate.now();
+		LocalDate apk_date = getDate( date_str );
+		long days_left = ChronoUnit.DAYS.between( today, apk_date );
+
+		return (int) Math.max( 0, days_left );	
+	}
+	
 	public String getJSON( String uri ) throws IOException, InterruptedException
 	{
 		HttpRequest request = HttpRequest.newBuilder().GET().uri( URI.create( uri ) ).build();
@@ -23,12 +48,6 @@ public abstract class APIClass {
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 	
 		return response.body();
-	}
-	
-	public String getDateStr( String date_str, String pattern )
-	{
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern( pattern );
-        return LocalDate.parse( date_str, formatter ).toString();
 	}
 
 	public String getJsonValue( JsonObject data, String key )

@@ -6,9 +6,9 @@ import java.time.format.DateTimeFormatter;
 
 import com.google.gson.*;
 
-public class RDWApi extends APIClass  {
-	protected String API_URL 		= "https://opendata.rdw.nl/resource/m9d7-ebf2.json";
-	protected String API_PARAMS 	= "?$where=kenteken='";
+public class OverheidApi extends APIClass  {
+	protected String API_URL 		= "https://api.overheid.io/voertuiggegevens/";
+	protected String API_PARAMS 	= "";
 	protected String DATE_PATTERN 	= "yyyyMMdd";
 	
     @Override
@@ -19,7 +19,7 @@ public class RDWApi extends APIClass  {
 
     @Override
     public String getDatePattern() { return DATE_PATTERN; }
-	
+    
     @Override
 	public StringBuffer buildUri( String data_table, String license )
 	{
@@ -29,7 +29,7 @@ public class RDWApi extends APIClass  {
 		return output;
 	}
 	
-    @Override
+	@Override
 	public JsonObject parseJSONObject( String json )
 	{
 		System.out.println( json );
@@ -42,20 +42,10 @@ public class RDWApi extends APIClass  {
         return array.get(0).getAsJsonObject();
 	}
 	
-    @Override
+	@Override
     public VehicleClass parseJSONVehicle( JsonObject object ) 
     {
-        String kenteken 	= super.getJsonValue( object, "kenteken" );
-        String merk 		= super.getJsonValue( object, "merk" );
-        String model 		= super.getJsonValue( object, "handelsbenaming" );
-        String vervaldatum 	= super.getJsonValue( object, "vervaldatum_apk" );
-
-        return new VehicleClass( 
-        		kenteken,
-        		merk,
-        		model,
-        		vervaldatum
-        );
+    	return null;
 	}
 	
     @Override

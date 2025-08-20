@@ -7,19 +7,25 @@ public class application {
 		//Overheid.io voertuiggegevens	REST	https://api.overheid.io/voertuiggegevens/4TFL24	
 		
 		RDWApi api = new RDWApi();
+		//OverheidApi api = new OverheidApi();
 		
-		VehicleClass vehicle = api.getVehicle("VPZ42X");
+		String kenteken = "VPZ42X";
+		
+		VehicleClass vehicle = api.getVehicle( kenteken );
 		
 		if ( vehicle == null ) {
-			System.out.println("Vehicle not found or error occurred.");
+			System.out.printf("Geen informatie gevonden voor voertuig met kenteken: %s.", 
+					kenteken
+			);
 			return;
 		}
 		
 		System.out.println( vehicle.kenteken );
-		System.out.println( vehicle.merk );
+		System.out.println( vehicle.merk + " " + vehicle.model );
 		System.out.println( vehicle.vervaldatum );
 		
-		String date = api.getDateStr( vehicle.vervaldatum, "yyyyMMdd" );
-		System.out.print( date );
+		int days = api.getDaysUntilAPK( vehicle.vervaldatum );
+		
+		System.out.printf("Apk verloop int %d dagen", days );
 	}
 }
