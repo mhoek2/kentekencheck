@@ -12,6 +12,7 @@ public final class OverheidApi extends APIClass  {
 	protected final String API_URL 		= "https://api.overheid.io/voertuiggegevens/";
 	protected final String API_PARAMS 	= "";
 	protected final String DATE_PATTERN = "yyyyMMdd";
+	protected final String API_KEY		= "";
 	
     @Override
     public String getApiUrl() { return API_URL; }
@@ -23,10 +24,15 @@ public final class OverheidApi extends APIClass  {
     public String getDatePattern() { return DATE_PATTERN; }
     
     @Override
+    public String[] getJsonKeys() {
+    	return new String[] {};
+    }
+    
+    @Override
 	public StringBuffer buildUri( String data_table, String license )
 	{
 		StringBuffer output = new StringBuffer( data_table );
-		output.append( API_PARAMS + license + "'" );
+		output.append( API_PARAMS + license + "?ovio-api-key=" + API_KEY );
 		
 		return output;
 	}

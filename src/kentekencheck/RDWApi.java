@@ -23,6 +23,54 @@ public final class RDWApi extends APIClass  {
     public String getDatePattern() { return DATE_PATTERN; }
 	
     @Override
+    public String[] getJsonKeys() {
+    	return new String[] {
+    	    "datum_tenaamstelling",
+    	    "bruto_bpm",
+    	    "inrichting",
+    	    "aantal_zitplaatsen",
+    	    "eerste_kleur",
+    	    "tweede_kleur",
+    	    "aantal_cilinders",
+    	    "cilinderinhoud",
+    	    "massa_ledig_voertuig",
+    	    "toegestane_maximum_massa_voertuig",
+    	    "massa_rijklaar",
+    	    "maximum_massa_trekken_ongeremd",
+    	    "maximum_trekken_massa_geremd",
+    	    "datum_eerste_toelating",
+    	    "datum_eerste_tenaamstelling_in_nederland",
+    	    "wacht_op_keuren",
+    	    "wam_verzekerd",
+    	    "aantal_deuren",
+    	    "aantal_wielen",
+    	    "lengte",
+    	    "europese_voertuigcategorie",
+    	    "plaats_chassisnummer",
+    	    "technische_max_massa_voertuig",
+    	    "typegoedkeuringsnummer",
+    	    "variant",
+    	    "uitvoering",
+    	    "volgnummer_wijziging_eu_typegoedkeuring",
+    	    "vermogen_massarijklaar",
+    	    "wielbasis",
+    	    "export_indicator",
+    	    "openstaande_terugroepactie_indicator",
+    	    "taxi_indicator",
+    	    "maximum_massa_samenstelling",
+    	    "jaar_laatste_registratie_tellerstand",
+    	    "tellerstandoordeel",
+    	    "code_toelichting_tellerstandoordeel",
+    	    "tenaamstellen_mogelijk",
+    	    "vervaldatum_apk_dt",
+    	    "datum_tenaamstelling_dt",
+    	    "datum_eerste_toelating_dt",
+    	    "datum_eerste_tenaamstelling_in_nederland_dt",
+    	    "zuinigheidsclassificatie"
+    	}; 	
+    }
+
+    @Override
 	public StringBuffer buildUri( String data_table, String license )
 	{
 		StringBuffer output = new StringBuffer( data_table );
@@ -47,17 +95,14 @@ public final class RDWApi extends APIClass  {
     @Override
     public VehicleClass parseJSONVehicle( JsonObject object ) 
     {
-        String kenteken 	= super.getJsonValue( object, "kenteken" );
-        String merk 		= super.getJsonValue( object, "merk" );
-        String model 		= super.getJsonValue( object, "handelsbenaming" );
-        String vervaldatum 	= super.getJsonValue( object, "vervaldatum_apk" );
+        VehicleClass vehicle = new VehicleClass( object );
 
-        return new VehicleClass( 
-        		kenteken,
-        		merk,
-        		model,
-        		vervaldatum
-        );
+        vehicle.kenteken 	= vehicle.getValue( "kenteken" );
+        vehicle.merk 		= vehicle.getValue( "merk" );
+        vehicle.model 		= vehicle.getValue( "handelsbenaming" );
+        vehicle.vervaldatum = vehicle.getValue( "vervaldatum_apk" );
+
+        return vehicle;
 	}
 	
     @Override

@@ -20,7 +20,13 @@ public abstract class APIClass {
     public abstract String getApiUrl();
     public abstract String getApiParams();
     public abstract String getDatePattern();
-	
+	public abstract StringBuffer buildUri( String data_table, String license );
+	public abstract String[] getJsonKeys();
+	public abstract JsonObject parseJSONObject( String json );
+	public abstract VehicleClass parseJSONVehicle( JsonObject object );
+	public abstract VehicleClass getVehicle( String license );
+
+
 	public LocalDate getDate( String date_str ) 
 	{
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern( getDatePattern() );
@@ -49,19 +55,4 @@ public abstract class APIClass {
 	
 		return response.body();
 	}
-
-	public String getJsonValue( JsonObject data, String key )
-	{
-		try {
-			return data.get( key ).getAsString();
-		}
-		catch ( NullPointerException e ) {
-			return new String("");
-		}
-	}
-	
-	public abstract StringBuffer buildUri( String data_table, String license );
-	public abstract JsonObject parseJSONObject( String json );
-	public abstract VehicleClass parseJSONVehicle( JsonObject object );
-	public abstract VehicleClass getVehicle( String license );
 }
