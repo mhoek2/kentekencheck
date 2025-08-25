@@ -1,9 +1,13 @@
 package kentekencheck;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 public class application {
 	final static RDWApi api = new RDWApi();
@@ -32,6 +36,52 @@ public class application {
 	static class VehiclePanelClass extends GUIPanel {
 		JLabel		title;
 		JLabel		APK_status;
+		Object[][]	data;
+		JTable 		data_table;
+		String[]	data_table_header;
+		JScrollPane data_table_scroll;
+	}
+	
+
+	
+	private static void setVehicleDataTable( VehicleClass vehicle )
+	{
+		int i = 0;
+		
+		String[] keys = api.getJsonKeys();
+		vehiclePanel.data = new Object[keys.length][2];
+
+		/*
+		// method: forEach
+		for ( String key : api.getJsonKeys() )
+		{
+		    vehiclePanel.data[i][0] = key;
+		    vehiclePanel.data[i][1] = vehicle.getValue(key);
+		    System.out.println( String.format("%s: %s", key, vehicle.getValue(key)) );
+			i++;
+		}
+		*/
+		
+		/*
+		// method: range
+		IntStream.range( 0, keys.length ).forEach(i -> {
+		    String key = keys[i];
+		    vehiclePanel.data[i][0] = key;
+		    vehiclePanel.data[i][1] = vehicle.getValue(key);
+		    System.out.println( String.format("%s: %s", key, vehicle.getValue(key)) );
+		});
+		*/
+
+		// method: for
+		for ( i = 0; i < keys.length; i++) 
+		{
+		    String key = keys[i];
+		    vehiclePanel.data[i][0] = key;
+		    vehiclePanel.data[i][1] = vehicle.getValue(key);
+		    System.out.println( String.format("%s: %s", key, vehicle.getValue(key)) );
+		}
+
+		vehiclePanel.data_table.setModel(new DefaultTableModel(vehiclePanel.data, vehiclePanel.data_table_header));	
 	}
 	
 	//
@@ -54,10 +104,8 @@ public class application {
 		System.out.println( vehicle.merk + " " + vehicle.model );
 		System.out.println( vehicle.vervaldatum );
 
-		for ( String key : api.getJsonKeys() )
-		{
-			System.out.println( String.format("%s: %s", key, vehicle.getValue(key)) );
-		}
+		// data table
+		setVehicleDataTable( vehicle );
 		
 		cardslayout.show( cards, vehiclePanel.identifier );
 	}
@@ -75,23 +123,43 @@ public class application {
         header.add(button);
 	    vehiclePanel.panel.add(header, BorderLayout.NORTH);
 		
+	    // center container holds: title, APK status & data table
+	    JPanel center_container = new JPanel();
+	    center_container.setLayout(new BoxLayout(center_container, BoxLayout.Y_AXIS));
+	    
 	    JPanel centerPanel = new JPanel();
 	    centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 	    
         // Title ( brand + model )
         vehiclePanel.title = new JLabel("");
         vehiclePanel.title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerPanel.add(Box.createVerticalStrut(20)); // Margin from top
+        centerPanel.add(Box.createVerticalStrut(20));
         centerPanel.add(vehiclePanel.title);
         
         // APK status
         vehiclePanel.APK_status = new JLabel("", SwingConstants.CENTER);
         vehiclePanel.APK_status.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerPanel.add(Box.createVerticalStrut(10)); // Margin between title and status
+        centerPanel.add(Box.createVerticalStrut(10));
         centerPanel.add(vehiclePanel.APK_status);
 
-        vehiclePanel.panel.add(centerPanel, BorderLayout.CENTER);
-  
+        // Data table
+        JPanel table_container = new JPanel();
+        
+        vehiclePanel.data_table_header = new String[]{"Veld", "Waarde"};
+        vehiclePanel.data = new Object[0][2];
+        vehiclePanel.data_table = new JTable( vehiclePanel.data, vehiclePanel.data_table_header );       
+        vehiclePanel.data_table_scroll = new JScrollPane(vehiclePanel.data_table);
+        vehiclePanel.data_table.setFillsViewportHeight(true);
+        
+        table_container.setLayout(new BorderLayout() );
+        table_container.add(vehiclePanel.data_table_scroll, BorderLayout.CENTER);
+        
+        
+        center_container.add(centerPanel, BorderLayout.CENTER);
+        center_container.add(Box.createVerticalStrut(20));
+        center_container.add(table_container, BorderLayout.CENTER); 
+        vehiclePanel.panel.add(center_container, BorderLayout.CENTER);
+ 
         return vehiclePanel.panel;
 	}
 
