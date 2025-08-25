@@ -1,18 +1,24 @@
 package kentekencheck;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class application {
 	final static RDWApi api = new RDWApi();
 	//final static OverheidApi api = new OverheidApi();
 
+	static protected JFrame		frame = null;
+	static protected FrameSize	frame_default_size = new FrameSize( 350, 250 );
+	
 	static protected JPanel 	cards = null;
 	static protected CardLayout cardslayout = null;
 	
@@ -20,11 +26,23 @@ public class application {
 	static protected VehiclePanelClass vehiclePanel = null;
 	
 	static int num_panels = 0;
-
+	static class FrameSize 
+	{
+		int w;
+		int h;
+		
+		FrameSize( int w, int h )
+		{
+			this.w = w;
+			this.h = h;
+		}
+	}
+	
 	static class GUIPanel
 	{
 		JPanel 		panel;
 		String		identifier;
+		FrameSize	frame_size;
 	}
 
 	// static or use instance of the application ( not viable for now )
@@ -41,8 +59,6 @@ public class application {
 		String[]	data_table_header;
 		JScrollPane data_table_scroll;
 	}
-	
-
 	
 	private static void setVehicleDataTable( VehicleClass vehicle )
 	{
@@ -73,9 +89,20 @@ public class application {
 		*/
 
 		// method: for
-		for ( i = 0; i < keys.length; i++) 
+		/*for ( i = 0; i < keys.length; i++) 
 		{
 		    String key = keys[i];
+		    vehiclePanel.data[i][0] = key;
+		    vehiclePanel.data[i][1] = vehicle.getValue(key);
+		    System.out.println( String.format("%s: %s", key, vehicle.getValue(key)) );
+		}*/
+		
+		// method for with list, and parse array to list
+		//List<String> keys_list = Arrays.asList("lengte", "variant");
+		List<String> keys_list = Arrays.asList(api.getJsonKeys());
+		for ( i = 0; i < keys_list.size(); i++) 
+		{
+		    String key = keys_list.get(i);
 		    vehiclePanel.data[i][0] = key;
 		    vehiclePanel.data[i][1] = vehicle.getValue(key);
 		    System.out.println( String.format("%s: %s", key, vehicle.getValue(key)) );
@@ -107,6 +134,9 @@ public class application {
 		// data table
 		setVehicleDataTable( vehicle );
 		
+		frame.setSize( vehiclePanel.frame_size.w, vehiclePanel.frame_size.h );
+		frame.revalidate();
+		
 		cardslayout.show( cards, vehiclePanel.identifier );
 	}
 	
@@ -115,11 +145,15 @@ public class application {
 		vehiclePanel = new VehiclePanelClass(); 
 		vehiclePanel.panel = new JPanel(new BorderLayout(10, 10));
 		vehiclePanel.identifier = Integer.toString( num_panels++ );
+		vehiclePanel.frame_size = new FrameSize( 800, 600 );
 		
 		// reset button
 	    JPanel header = new JPanel(new FlowLayout(FlowLayout.LEFT));
 	    JButton button = new JButton("Terug");
-        button.addActionListener(e -> cardslayout.show(cards, mainPanel.identifier ) );
+        button.addActionListener(e -> {
+        	frame.setSize( mainPanel.frame_size.w, mainPanel.frame_size.h );
+        	cardslayout.show(cards, mainPanel.identifier );
+        } );
         header.add(button);
 	    vehiclePanel.panel.add(header, BorderLayout.NORTH);
 		
@@ -185,20 +219,34 @@ public class application {
 	{
 		mainPanel = new MainPanelClass();  
 		mainPanel.panel = new JPanel();     
-		mainPanel.panel.setLayout(new GridLayout(10, 1));
+		mainPanel.panel.setLayout(new GridLayout(6, 3));
         mainPanel.identifier = Integer.toString( num_panels++ );
+        mainPanel.frame_size = frame_default_size;
+        
+        mainPanel.panel.add(Box.createVerticalStrut(10));
 
         // title
-        JLabel title = new JLabel("Voer kenteken in:");
+        JLabel title = new JLabel("Voer kenteken in:", SwingConstants.CENTER);
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.panel.add(title);
-        
+
         // license input field
         JTextField licenseField = new JTextField();
-        mainPanel.panel.add(licenseField);
+        JPanel licensePanel = new JPanel(new BorderLayout());
+        licensePanel.setBorder(new EmptyBorder(0, 40, 0, 40));  // top,left,bottom,right padding
+        licensePanel.add(licenseField, BorderLayout.CENTER);
+        mainPanel.panel.add(licensePanel);
+        
+        mainPanel.panel.add(Box.createVerticalStrut(1));
         
         // submit button
-        JButton button = new JButton("Check APK status");
-        mainPanel.panel.add(button);
+        JButton button = new JButton("Check APK");
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setMaximumSize( new Dimension( 130, button.getPreferredSize().height ));
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        buttonPanel.add(button, BorderLayout.CENTER);
+        mainPanel.panel.add(buttonPanel);
         
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -216,9 +264,9 @@ public class application {
 
 	public static void main( String[] args)
 	{		
-        JFrame frame = new JFrame("APK Check");
+        frame = new JFrame("APK Check");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 450);
+        frame.setSize( frame_default_size.w, frame_default_size.h );
   
         cardslayout = new CardLayout();
         cards = new JPanel(cardslayout);
