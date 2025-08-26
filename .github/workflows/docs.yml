@@ -3,9 +3,11 @@ name: Build and Deploy
 on:
   push:
     branches:
+      - main
       - workflow
   pull_request:
     branches:
+      - main
       - workglow
 
 jobs:
@@ -98,8 +100,35 @@ jobs:
           name: windows-package
           path: build/kentekencheck-1.0.exe
 
-  create-release:
+  create-prerelease:
     if: github.event_name == 'push' && github.ref == 'refs/heads/workflow'
+    needs: [build-windows, build-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Windows Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-package
+          
+      - name: Download Linix Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-package
+          
+      - name: Create Pre-release
+        id: create_prerelease
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GH_TOKEN }}
+          automatic_release_tag: "latest-beta"
+          prerelease: true
+          title: "Beta Build"
+          files: |
+            kentekencheck-1.0.exe
+            kentekencheck_1.0-1_amd64.deb
+            
+  create-release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [build-windows, build-linux]
     runs-on: ubuntu-latest
     steps:
