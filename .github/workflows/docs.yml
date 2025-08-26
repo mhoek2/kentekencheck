@@ -33,20 +33,12 @@ jobs:
       - name: Compile Java module
         run: |
           mkdir mods\kentekencheck
-          dir /s /b *.java > sources.txt
-          javac -d mods\kentekencheck ^
-            --module-path vendor\gson-2.10.1.jar ^
-            --add-modules com.google.gson ^
-            --add-reads kentekencheck=ALL-UNNAMED ^
-            @sources.txt
+          javac -d mods/kentekencheck --module-path "vendor\gson-2.10.1.jar" --add-modules com.google.gson --add-reads kentekencheck=ALL-UNNAMED (Get-ChildItem -Recurse -Filter *.java).FullName
 
       - name: Create JAR
         run: |
           mkdir build
-          jar --create ^
-            --file=build\output.jar ^
-            --module-version=1.0 ^
-            -C mods\kentekencheck .
+          jar --create --file=build/output.jar --module-version=1.0 -C mods/kentekencheck .
 
       - name: Run jpackage
         run: |
