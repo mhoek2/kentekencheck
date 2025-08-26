@@ -48,5 +48,26 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: kentekencheck
+          name: packages
           path: build/kentekencheck-1.0.exe
+
+  create-release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/workflow'
+    needs: [app-and-docs]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: packages
+          
+      - name: Create Release
+        id: create_release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: "Release"
+          files: |
+            kentekencheck-1.0.exe
