@@ -42,7 +42,7 @@ jobs:
       - name: Run jpackage
         shell: cmd
         run: |
-          jpackage @pack.jpack
+          jpackage @build\pack.jpack
           
       - name: Upload artifact
         uses: actions/upload-artifact@v4
