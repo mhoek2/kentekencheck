@@ -40,5 +40,12 @@ jobs:
           jar --create --file=build/output.jar --module-version=1.0 -C mods/kentekencheck .
 
       - name: Run jpackage
+        shell: cmd
         run: |
           jpackage @pack.jpack
+          
+       - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kentekencheck
+          path: build/kentekencheck-1.0.exe
