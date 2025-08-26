@@ -37,7 +37,6 @@ jobs:
 
       - name: Create JAR
         run: |
-          mkdir build
           jar --create --file=build/output.jar --module-version=1.0 -C mods/kentekencheck .
 
       - name: Run jpackage
