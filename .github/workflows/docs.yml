@@ -100,7 +100,7 @@ jobs:
 
   create-release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/workflow'
-    needs: [app-and-docs]
+    needs: [build-windows, build-linux]
     runs-on: ubuntu-latest
     steps:
       - name: Download Windows Artifacts
