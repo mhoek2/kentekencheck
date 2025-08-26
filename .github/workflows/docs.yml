@@ -1,0 +1,57 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - workflow
+  pull_request:
+    branches:
+      - workglow
+
+jobs:
+  app-and-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip
+          
+      - name: Download GSON JAR
+        run: |
+          mkdir -p vendor
+          curl -L -o vendor/gson-2.10.1.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar
+
+      - name: Compile Java module
+        run: |
+          mkdir -p mods/kentekencheck
+          # Compile all Java files in the project recursively
+          find . -name "*.java" > sources.txt
+          javac -d mods/kentekencheck \
+            --module-path vendor/gson-2.10.1.jar \
+            --add-modules com.google.gson \
+            --add-reads kentekencheck=ALL-UNNAMED \
+            @sources.txt
+
+      - name: Create JAR
+        run: |
+          mkdir -p build
+          jar --create \
+            --file=build/output.jar \
+            --module-version=1.0 \
+            -C mods/kentekencheck .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: output-jar
+          path: build/output.jar
