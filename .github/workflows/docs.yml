@@ -9,7 +9,54 @@ on:
       - workglow
 
 jobs:
-  app-and-docs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip
+
+      - name: Download GSON JAR
+        run: |
+          mkdir -p vendor
+          curl -L -o vendor/gson-2.10.1.jar https://repo1.maven.org/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar
+
+      - name: Compile Java module
+        run: |
+          mkdir -p mods/kentekencheck
+          find . -name "*.java" > sources.txt
+          javac -d mods/kentekencheck \
+            --module-path vendor/gson-2.10.1.jar \
+            --add-modules com.google.gson \
+            --add-reads kentekencheck=ALL-UNNAMED \
+            @sources.txt
+
+      - name: Create JAR
+        run: |
+          jar --create --file=build/output.jar --module-version=1.0 -C mods/kentekencheck .
+
+      - name: Run jpackage
+        run: |
+          cd build
+          jpackage @pack-linux-deb.jpack
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-package
+          path: build/output.jar
+
+  build-windows:
     runs-on: windows-latest
 
     steps:
@@ -43,12 +90,12 @@ jobs:
         shell: cmd
         run: |
           cd build
-          jpackage @pack.jpack
+          jpackage @pack-windows.jpack
           
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: packages
+          name: windows-package
           path: build/kentekencheck-1.0.exe
 
   create-release:
@@ -56,10 +103,15 @@ jobs:
     needs: [app-and-docs]
     runs-on: ubuntu-latest
     steps:
-      - name: Download Artifacts
+      - name: Download Windows Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: packages
+          name: windows-package
+          
+      - name: Download Linix Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-package
           
       - name: Create Release
         id: create_release
@@ -71,3 +123,4 @@ jobs:
           title: "Release"
           files: |
             kentekencheck-1.0.exe
+            output.jar
