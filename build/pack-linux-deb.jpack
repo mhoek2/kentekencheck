@@ -1,7 +1,5 @@
 --name kentekencheck
 --app-version 1.0
---win-dir-chooser
---win-shortcut
 --module-path ../mods:../vendor/gson-2.10.1.jar
 --module kentekencheck/kentekencheck.application
 --verbose
