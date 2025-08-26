@@ -240,7 +240,7 @@ public class application {
         mainPanel.panel.add(Box.createVerticalStrut(1));
         
         // submit button
-        JButton button = new JButton("Check APK");
+        JButton button = new JButton("Check APK!");
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.setMaximumSize( new Dimension( 130, button.getPreferredSize().height ));
         JPanel buttonPanel = new JPanel();
