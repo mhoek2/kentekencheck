@@ -8,7 +8,7 @@ on:
   pull_request:
     branches:
       - main
-      - workglow
+      - workflow
 
 jobs:
   build-linux:
@@ -127,6 +127,7 @@ jobs:
             kentekencheck-1.0.exe
             kentekencheck_1.0-1_amd64.deb
             
+
   create-release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [build-windows, build-linux]
