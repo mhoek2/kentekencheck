@@ -44,7 +44,7 @@ jobs:
         run: |
           jpackage @pack.jpack
           
-       - name: Upload artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: kentekencheck
