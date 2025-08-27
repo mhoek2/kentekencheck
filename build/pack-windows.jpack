@@ -5,4 +5,5 @@
 --module-path ../mods;../vendor/gson-2.10.1.jar
 --module kentekencheck/kentekencheck.application
 --icon icon.ico
+--license-file ../LICENSE
 --verbose
