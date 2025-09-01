@@ -183,7 +183,7 @@ public class application {
     /**
      * Initialize GUI objects in the vehicle result panel
      *
-     * @retuns a {@link JPanel} object containing initialized GUI objects
+     * @return a {@link JPanel} object containing initialized GUI objects
      */
 	public static JPanel createResultCard()
 	{
