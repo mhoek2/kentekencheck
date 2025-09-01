@@ -25,13 +25,18 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-
+/**
+ * Final class that extends APIClass that implements the API endpoint for RDW
+ * <p>
+ * This API implements opendata.rdw endpoint to fetch and parse vehicle data by license plate
+ * </p>
+ */
 public final class RDWApi extends APIClass  {
 	//RDW Open Data (resource)	REST	.../resource/m9d7-ebf2.json?$where=kenteken='63BKP7'
 
 	protected final String API_URL 		= "https://opendata.rdw.nl/resource/m9d7-ebf2.json";
 	protected final String API_PARAMS 	= "?$where=kenteken='";
-	protected final String DATE_PATTERN 	= "yyyyMMdd";
+	protected final String DATE_PATTERN = "yyyyMMdd";
 	
     @Override
     public String getApiUrl() { return API_URL; }

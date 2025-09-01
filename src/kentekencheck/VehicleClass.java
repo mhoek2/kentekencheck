@@ -19,17 +19,40 @@ package kentekencheck;
 
 import com.google.gson.JsonObject;
 
+/**
+ * Represents a vehicle using data retrieved in JSON format.
+ * <p>
+ * This class provides access to vehicle information,
+ * based on data stored in a {@link JsonObject}.
+ * </p>
+ */
 public class VehicleClass {
+	/** JSON object containing the vehicle data */
     JsonObject data;
+
     String kenteken;
     String merk;
     String model;
     String vervaldatum;
     
+    /**
+     * Constructs a VehicleClass object using the provided JSON data.
+     *
+     * @param data A {@link JsonObject} containing key-value pairs with details
+     */
     VehicleClass( JsonObject data ) {
         this.data = data;
     }
     
+    /**
+     * Retrieves a value from the JSON data using the a key.
+     * <p>
+     * If the key does not exist or its value is null, an empty string is returned.
+     * </p>
+     *
+     * @param key The key whose associated value is to be returned
+     * @return The value as a {@link String}, or an empty string if the key is not found or null
+     */
 	public String getValue( String key )
 	{
 		try {

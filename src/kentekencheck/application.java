@@ -29,7 +29,12 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
+/**
+ * Main class for the Kentekencheck pplication.
+ * This class initializes and manages the GUI panels for license plate input and vehicle data display.
+ */
 public class application {
+	/** Static reference to the RDW API implementation */
 	final static RDWApi api = new RDWApi();
 	//final static OverheidApi api = new OverheidApi();
 
@@ -43,11 +48,21 @@ public class application {
 	static protected VehiclePanelClass vehiclePanel = null;
 	
 	static int num_panels = 0;
+	
+    /**
+     * Helper class to represent frame dimensions. 
+     * There is a {@link Dimension} class though ..
+     */
 	static class FrameSize 
 	{
 		int w;
 		int h;
 		
+        /**
+         * Constructs a new FrameSize with the specified width and height.
+         * @param w Width of the frame
+         * @param h Height of the frame
+         */
 		FrameSize( int w, int h )
 		{
 			this.w = w;
@@ -77,6 +92,12 @@ public class application {
 		JScrollPane data_table_scroll;
 	}
 	
+    /**
+     * Sets content in the vehicle details table
+     * - Testing various iteration methods
+     *
+     * @param vehicle {@link VehicleClass} object containing vehicle data
+     */
 	private static void setVehicleDataTable( VehicleClass vehicle )
 	{
 		int i = 0;
@@ -128,9 +149,11 @@ public class application {
 		vehiclePanel.data_table.setModel(new DefaultTableModel(vehiclePanel.data, vehiclePanel.data_table_header));	
 	}
 	
-	//
-	// Vehicle data panel
-	//
+    /**
+     * Opens and fills the vehicle data panel 
+     *
+     * @param vehicle {@link VehicleClass} object containing vehicle data
+     */
 	public static void openVehicleData( VehicleClass vehicle )
 	{
 		vehiclePanel.title.setText( String.format("%s %s", vehicle.merk, vehicle.model) );
@@ -157,6 +180,11 @@ public class application {
 		cardslayout.show( cards, vehiclePanel.identifier );
 	}
 	
+    /**
+     * Initialize GUI objects in the vehicle result panel
+     *
+     * @retuns a {@link JPanel} object containing initialized GUI objects
+     */
 	public static JPanel createResultCard()
 	{
 		vehiclePanel = new VehiclePanelClass(); 
@@ -214,9 +242,10 @@ public class application {
         return vehiclePanel.panel;
 	}
 
-	//
-	// Main panel
-	//
+    /**
+     * Parse a given license plate string, open vehicle result panel when successful 
+     * else show error message.
+     */
 	public static void parseLicense( String license ) 
 	{
         VehicleClass vehicle = api.getVehicle( license );
@@ -232,6 +261,9 @@ public class application {
     	);
 	}
 	
+    /**
+     * Initialize GUI objects in the main application panel
+     */
 	public static JPanel createMainCard()
 	{
 		mainPanel = new MainPanelClass();  
@@ -279,6 +311,15 @@ public class application {
         return mainPanel.panel;
 	}
 
+	/**
+	 * Launches the main GUI application.
+	 * <p>
+	 * Initializes the main frame, sets up the card layout,
+	 * creates and registers the primary panels for user input
+	 * and vehicle data display.
+	 *
+	 * @param args Command-line arguments (unused)
+	 */
 	public static void main( String[] args)
 	{		
         frame = new JFrame("APK Check");
