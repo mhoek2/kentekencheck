@@ -19,5 +19,29 @@ The primary goal of this project is to gain more knowledge in Java programming.
 ## Preview:
 ![preview](https://github.com/user-attachments/assets/368622c5-5af3-44f9-89d4-1f695cfffd8c)
 
+## Development
+#### Prerequisite
+1. Download gson-2.10.1.jar and place in vendor folder
+
+#### Run jpackage locally:
+1. Open Windows powershell and run:
+```
+  cd into applicationroot
+  javac -d mods/kentekencheck --module-path "vendor\gson-2.10.1.jar" --add-modules com.google.gson --add-reads kentekencheck=ALL-UNNAMED (Get-ChildItem -Recurse -Filter *.java).FullName
+  jar --create --file=build/output.jar --module-version=1.0 -C mods/kentekencheck .
+```
+2. Open Windows command prompt and run:
+```
+  cd into applicationroot/build
+  jpackage @pack.jpack
+```
+
+#### Run javadoc locally
+1. Open Windows command prompt and run:
+```
+  cd into applicationroot
+  javadoc -d docs -classpath "vendor\gson-2.10.1.jar" src/kentekencheck/*.java
+```
+
 #### Sources
 - [RDW API information](https://opendata.rdw.nl)
